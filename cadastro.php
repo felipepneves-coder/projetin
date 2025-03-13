@@ -4,22 +4,31 @@ require 'conexao.php';
 
 // Ve se o form foi enviado por post
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    // pega os dados
-    $nome = $_POST['nome'];
-    $email = $_POST['email'];
+    // pega os dados e remove espaços extras
+    $nome = trim($_POST['nome']);
+    $email = trim($_POST['email']);
+    $senha = trim($_POST['senha']);
+
+    // valida o formato do email
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        die("Formato de e-mail inválido!");
+    }
 
     // criptografa a senha (importante)
-    $senha = password_hash($_POST['senha'], PASSWORD_BCRYPT);
+    $senha_hash = password_hash($senha, PASSWORD_BCRYPT);
 
     // Prepara a consulta SQL para evitar SQL Injection (importante)
-    $stmt = $pdo->prepare('INSERT INTO usuarios(nome, email, senha) VALUES (?, ?, ?)');
+    $stmt = $pdo->prepare('INSERT INTO usuarios (nome, email, senha) VALUES (?, ?, ?)');
 
     // Executa a inserção com os dados do usuário
-    $stmt->execute([$nome, $email, $senha]);
-
-    // pagina de login
-    header('Location: login.php');
-    exit; // Finaliza o script 
+    if ($stmt->execute([$nome, $email, $senha_hash])) {
+        // pagina de login
+        header('Location: login.php');
+        exit; // Finaliza o script
+    } else {
+        // mensagem de erro genérica
+        echo "Erro ao cadastrar usuário. Tente novamente mais tarde.";
+    }
 }
 ?>
 

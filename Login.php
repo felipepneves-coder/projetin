@@ -8,8 +8,9 @@ require 'conexao.php';
 // Se o formulário foi enviado
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Pega o email e a senha
-    $email = $_POST['email'];
-    $senha = $_POST['senha'];
+    $email = trim($_POST['email']);
+    $senha = trim($_POST['senha']);
+
 
     // Consulta SQL p buscar o usuário pelo email
     $stmt = $pdo->prepare('SELECT * FROM usuarios WHERE email = ?');

@@ -1,6 +1,3 @@
-
-
-
 <?php
 $host = 'localhost'; // Servidor do b dados
 $db   = 'felps'; // Nome do b dados
@@ -25,4 +22,3 @@ try {
     // Em caso de erro, lança uma exceção com a mensagem e o código do erro
     throw new \PDOException($e->getMessage(), (int)$e->getCode());
 }
-?>
